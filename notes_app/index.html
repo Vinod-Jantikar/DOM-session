@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Notes Manager</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 20px;
+        }
+
+        #box {
+            background: white;
+            width: 350px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        input,
+        textarea,
+        button {
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .note {
+            background: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 8px 0;
+            box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+        }
+
+        .note p {
+            margin: 0;
+        }
+
+        .btnEdit,
+        .btnDel {
+            width: auto;
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        /* ✏ Edit Button */
+        .btnEdit {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btnEdit:hover {
+            background: #e58900;
+            transform: scale(1.05);
+        }
+
+        /* ❌ Delete Button */
+        .btnDel {
+            background: #e63946;
+            color: white;
+        }
+
+        .btnDel:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .note button {
+            margin-right: 8px;
+            display: inline-block;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2 style="text-align:center;">📘 Notes Manager (localStorage)</h2>
+
+    <div id="box">
+        <textarea id="noteInput" placeholder="Write your note..."></textarea>
+
+        <button onclick="addNote()">Add Note</button>
+        <button onclick="clearNotes()">Clear All</button>
+    </div>
+
+    <div id="notesList"></div>
+</body>
+<script>
+
+    let notes = JSON.parse(localStorage.getItem("notes")) || [];
+
+    // FUNCTION TO SAVE THE DATA IN LS.
+    function save() {
+        localStorage.setItem("notes", JSON.stringify(notes))
+
+        // localStorage.setItem("vinod","vinod")
+    }
+
+    // Create a note and store it in Local storage.
+    function addNote() {
+        // select the textarea 
+        let text = document.getElementById("noteInput").value;
+
+        // push into array 
+        notes.push(text);
+
+        // save to ls
+        save();
+
+        render()
+    }
+
+// function to render on the UI.
+    function render() {
+        let list = document.getElementById("notesList");
+        list.innerHTML = "";
+
+        notes.forEach((note, index) => {
+            let div = document.createElement("div");
+            div.className = "note";
+
+            let p = document.createElement("p");
+            p.textContent = note;
+
+
+            let editBtn = document.createElement('button');
+            editBtn.className = "btnEdit";
+            editBtn.textContent = "Edit";
+            editBtn.addEventListener("click", () => {
+                editNote(index)
+            })
+
+
+            let delBtn = document.createElement('button');
+            delBtn.className = "btnDel";
+            delBtn.textContent = "Delete";
+            delBtn.addEventListener("click", () => {
+                deleteNote(index)
+            })
+
+            div.appendChild(p);
+            div.appendChild(editBtn)
+            div.appendChild(delBtn)
+
+            list.appendChild(div)
+        })
+    }
+
+
+    function editNote(i) {
+        let updated = prompt("Edit Note", notes[i]);
+        if (updated !== null) {
+            notes[i] = updated;
+            save();
+            render()
+        }
+    }
+
+    function deleteNote(i) {
+        notes.splice(i, 1);
+        save();
+        render()
+    }
+
+
+    function clearNotes() {
+        localStorage.clear();
+        render()
+    }
+
+    render()
+</script>
+
+</html>
