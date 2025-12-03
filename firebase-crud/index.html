@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8"> <!-- Sets character encoding -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures responsive layout -->
+    <title>FIREBASE CRUD</title> <!-- Page title -->
+
+    <style>
+        /* Basic page styling */
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f7;
+            margin: 0;
+            padding: 40px;
+        }
+
+        /* Center heading */
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #222;
+        }
+
+        /* Center form container */
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Input styling */
+        input {
+            width: calc(50% - 12px);
+            padding: 10px;
+            margin: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        /* Primary button */
+        button {
+            padding: 10px 18px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        button:hover {
+            background: #0056d2;
+        }
+
+        /* User card */
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        /* Edit button */
+        .btnEdit {
+            background: #ff9800;
+            color: white;
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+
+        .btnEdit:hover {
+            background: #e58900;
+        }
+
+        /* Delete button */
+        .btnDel {
+            background: #e63946;
+            color: white;
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+
+        .btnDel:hover {
+            background: #c82333;
+        }
+
+        #userList {
+            display: flex;
+            gap: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Input box container -->
+    <div class="container">
+        <h1>Firebase CRUD Using Fetch</h1>
+
+        <!-- Name input -->
+        <input id="name" type="text" placeholder="Enter name">
+
+        <!-- Age input -->
+        <input id="age" type="text" placeholder="Enter age">
+
+        <!-- Add user button -->
+        <button onclick="addUser()">Add User</button>
+    </div>
+
+    <!-- Users will be loaded here -->
+    <div id="userList"></div>
+
+</body>
+
+<script>
+    // Base URL of Firebase Realtime Database
+    const BASE_URL = "https://fir-drs-5f542-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
+    // Add user to Firebase
+    async function addUser() {
+        const name = document.getElementById("name").value.trim(); // Get name
+        const age = document.getElementById("age").value.trim();   // Get age
+
+        if (!name || !age) {  // Validation
+            alert("Please enter name and age.");
+            return;
+        }
+
+        const data = { name, age }; // Object to send
+
+        // POST → save new user in Firebase
+        await fetch(`${BASE_URL}users.json`, {
+            method: "POST",
+            body: JSON.stringify(data)
+        });
+
+        alert("User added successfully");
+
+        document.getElementById("name").value = ""; // Clear input
+        document.getElementById("age").value = "";  // Clear input
+
+        getUsers(); // Refresh list
+    }
+
+    // Fetch all users from Firebase
+    async function getUsers() {
+        try {
+            const res = await fetch(`${BASE_URL}users.json`); // GET request
+            const data = await res.json(); // Firebase returns object
+
+            // Convert Firebase object → array with IDs included
+            const usersArray = data
+                ? Object.entries(data).map(([id, user]) => ({
+                    id,       // Firebase unique ID
+                    ...user   // Spread user data
+                }))
+                : [];
+
+            renderUsers(usersArray); // Render to UI
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Display all users in HTML
+    function renderUsers(users) {
+        const mainDiv = document.getElementById("userList"); // Container div
+        mainDiv.innerHTML = ""; // Clear previous content
+
+        users.forEach((user) => { // Loop through users
+            let card = document.createElement("div"); // Create card
+            card.className = "card";
+
+            let name = document.createElement("h3"); // Name element
+            name.textContent = user.name;
+
+            let age = document.createElement("p"); // Age element
+            age.textContent = `Age: ${user.age}`;
+
+            // Edit button
+            let editBtn = document.createElement("button");
+            editBtn.className = "btnEdit";
+            editBtn.textContent = "Edit";
+            editBtn.onclick = () => updateUser(user.id, user.name, user.age);
+
+            // Delete button
+            let delBtn = document.createElement("button");
+            delBtn.className = "btnDel";
+            delBtn.textContent = "Delete";
+            delBtn.onclick = () => deleteUser(user.id);
+
+            // Append elements to card
+            card.appendChild(name);
+            card.appendChild(age);
+            card.appendChild(editBtn);
+            card.appendChild(delBtn);
+
+            // Add card to page
+            mainDiv.appendChild(card);
+        });
+    }
+
+    // Update user in Firebase
+    async function updateUser(id, oldName, oldAge) {
+        const name = prompt("Enter new name", oldName); // Ask new name
+        const age = prompt("Enter new age", oldAge);     // Ask new age
+
+        if (!name || !age) return; // Validation
+
+        const updatedUser = { name, age }; // New object
+
+        // PATCH → update only selected fields
+        await fetch(`${BASE_URL}users/${id}.json`, {
+            method: "PATCH",
+            body: JSON.stringify(updatedUser)
+        });
+
+        alert("User updated!");
+
+        getUsers(); // Reload list
+    }
+
+    // Delete user by ID
+    async function deleteUser(id) {
+        await fetch(`${BASE_URL}users/${id}.json`, {
+            method: "DELETE" // DELETE request
+        });
+
+        alert("User deleted!");
+
+        getUsers(); // Refresh list
+    }
+
+    getUsers(); // Load users on page load
+</script>
+
+</html>
