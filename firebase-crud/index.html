@@ -160,9 +160,16 @@
     async function getUsers() {
         try {
             const res = await fetch(`${BASE_URL}users.json`); // GET request
-            const data = await res.json(); // Firebase returns object
+            const data = await res.json(); 
 
-            // Convert Firebase object → array with IDs included
+
+            console.log("data", data)
+         
+
+            const before = Object.entries(data);
+            console.log("before", before);
+            
+
             const usersArray = data
                 ? Object.entries(data).map(([id, user]) => ({
                     id,       // Firebase unique ID
@@ -233,6 +240,7 @@
 
         getUsers(); // Reload list
     }
+
 
     // Delete user by ID
     async function deleteUser(id) {

@@ -1,0 +1,95 @@
+   /* Basic page styling */
+   body {
+       font-family: Arial, sans-serif;
+       background: #f2f4f7;
+       margin: 0;
+       padding: 40px;
+   }
+
+   /* Center heading */
+   h1 {
+       text-align: center;
+       margin-bottom: 30px;
+       color: #222;
+   }
+
+   /* Center form container */
+   .container {
+       max-width: 600px;
+       margin: auto;
+       background: #fff;
+       padding: 25px;
+       border-radius: 12px;
+       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+   }
+
+   /* Input styling */
+   input {
+       width: calc(50% - 12px);
+       padding: 10px;
+       margin: 6px;
+       border: 1px solid #ccc;
+       border-radius: 6px;
+       font-size: 16px;
+   }
+
+   /* Primary button */
+   button {
+       padding: 10px 18px;
+       background: #007bff;
+       color: white;
+       border: none;
+       border-radius: 6px;
+       cursor: pointer;
+       font-size: 16px;
+       margin: 10px 0;
+   }
+
+   button:hover {
+       background: #0056d2;
+   }
+
+   /* User card */
+   .card {
+       background: white;
+       padding: 15px;
+       border-radius: 12px;
+       text-align: center;
+       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+       margin-bottom: 20px;
+   }
+
+   /* Edit button */
+   .btnEdit {
+       background: #ff9800;
+       color: white;
+       padding: 6px 14px;
+       border: none;
+       border-radius: 6px;
+       cursor: pointer;
+       margin: 10px 5px;
+   }
+
+   .btnEdit:hover {
+       background: #e58900;
+   }
+
+   /* Delete button */
+   .btnDel {
+       background: #e63946;
+       color: white;
+       padding: 6px 14px;
+       border: none;
+       border-radius: 6px;
+       cursor: pointer;
+       margin: 10px 5px;
+   }
+
+   .btnDel:hover {
+       background: #c82333;
+   }
+
+   #userList {
+       display: flex;
+       gap: 20px;
+   }
