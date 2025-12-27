@@ -1,14 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const TodoItem = ({ item }) => {
+const TodoItem = ({ text }) => {
     return (
-        <div>
-            <ul>
-                <li>
-                    <span>{item}</span>
-                </li>
-            </ul>
-        </div>
+        <>
+            <div>
+                <ul>
+                    <li>
+                        <span>{text}</span>
+                    </li>
+                </ul>
+            </div>
+
+
+            <div>
+                <button onClick={update}>Update</button>
+            </div>
+
+        </>
     )
 }
 
