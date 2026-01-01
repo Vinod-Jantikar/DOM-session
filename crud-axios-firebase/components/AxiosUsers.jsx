@@ -7,15 +7,23 @@ const BASE_URL = 'https://users-crud-firebase-app-default-rtdb.asia-southeast1.f
 const AxiosUsers = () => {
     const [inputData, setInputData] = useState({
         name: "",
-        email: ""
+        email: "",
+        category: "",
+        availability: ""
     });
+
     const [users, setUsers] = useState({});
     const [userId, setUserId] = useState(null)
 
 
     const handleChange = (e) => {
+
         const { name, value } = e.target;
+
+
         setInputData((prev) => ({ ...prev, [name]: value }))
+
+
     }
 
 
@@ -61,7 +69,9 @@ const AxiosUsers = () => {
             setInputData((prev) => ({
                 ...prev,
                 name: users[id].name,
-                email: users[id].email
+                email: users[id].email,
+                category: users[id].category,
+                availability: users[id].availability
             }))
 
 
@@ -74,9 +84,9 @@ const AxiosUsers = () => {
 
     const handleDelete = async (id) => {
         try {
-                const user = await axios.delete(`${BASE_URL}/${id}.json`);
-                alert("User deleted successfully.");
-                fetchUsers()
+            const user = await axios.delete(`${BASE_URL}/${id}.json`);
+            alert("User deleted successfully.");
+            fetchUsers()
         } catch (error) {
             console.log(error)
         }
@@ -99,6 +109,23 @@ const AxiosUsers = () => {
 
 
                     <input type="text" placeholder="Enter Email" name="email" value={inputData.email} onChange={handleChange} style={{ width: '90%', margin: 10, padding: '10px' }} />
+
+
+                    <select name="category" value={inputData.category} id="" onChange={handleChange}>
+                        <option value=""></option>
+                        <option value="Auto">Auto</option>
+                        <option value="Car">Car</option>
+                        <option value="Truck">Truck</option>
+                        <option value="Bus">Bus</option>
+                    </select>
+
+
+                    <select name="availability" value={inputData.availability} id="" onChange={handleChange}>
+                        <option value=""></option>
+                        <option value="Availabe">Availabe</option>
+                        <option value="Unavailable">Unavailable</option>
+                    </select>
+
 
                     <button style={{ width: '50%', color: 'White', backgroundColor: '#1E88E5', padding: '10px', marginBottom: '10px', borderRadius: '8px' }}>{userId ? "Update" : "Add"}</button>
 
@@ -130,3 +157,11 @@ const AxiosUsers = () => {
 }
 
 export default AxiosUsers
+
+
+
+
+
+
+
+
