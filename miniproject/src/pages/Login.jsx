@@ -8,7 +8,25 @@ const Login = () => {
     const { login } = useAuth();
     const navigate = useNavigate();
 
+
+    // data from local storage 
+
+    const localEmail = localStorage.getItem();
+    const localpassword = localStorage.getItem()
+
+
+
     const handleSubmit = (e) => {
+        if (email !== localEmail) {
+            alert('Incorrect login credentials.')
+            return
+        }
+
+        if (password !== localpassword) {
+            alert('Incorrect login credentials.')
+            return
+        }
+
         e.preventDefault();
 
         if (password.trim().length < 6) {
